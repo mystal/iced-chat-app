@@ -1,4 +1,4 @@
-use iced::{scrollable, text_input, Button, Column, Container, Element, Length, Row, Rule, Sandbox, Scrollable, Settings, Text, TextInput};
+use iced::{scrollable, text_input, Column, Container, Element, Length, Row, Rule, Sandbox, Scrollable, Settings, Text, TextInput};
 
 struct ChatLine {
     text: String,
@@ -84,7 +84,7 @@ impl Sandbox for ChatApp {
         // Display scrollable chat log history.
         let log = Column::with_children(
             self.chat_log.lines.iter()
-                .map(|line| Text::new(&line.text).into())
+                .map(|line| text_line(&line.text).into())
                 .collect()
         )
             .spacing(4);
@@ -119,6 +119,30 @@ impl Sandbox for ChatApp {
     }
 }
 
+fn text_line<'a>(text: &str) -> Container<'a, ChatAppMessage> {
+    Container::new(Text::new(text))
+        .padding(8)
+        .style(style::Container)
+}
+
 fn main() -> iced::Result {
     ChatApp::run(Settings::default())
+}
+
+mod style {
+    use iced::{container, Background, Color};
+
+    pub struct Container;
+
+    impl container::StyleSheet for Container {
+        fn style(&self) -> container::Style {
+            container::Style {
+                text_color: Some(Color::WHITE),
+                background: Some(Background::Color(Color::BLACK)),
+                border_radius: 5.0,
+                border_width: 1.0,
+                .. container::Style::default()
+            }
+        }
+    }
 }
